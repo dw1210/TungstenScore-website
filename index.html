@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TungstenScore | Rust-Powered Windows Security</title>
+<style>
+    :root {
+        --bg: #030303;
+        --fg: #f4f4f4;
+        --dim: #444444;
+        --accent: #ffffff;
+    }
+    
+    * { 
+        box-sizing: border-box; 
+        margin: 0; 
+        padding: 0; 
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--fg);
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        line-height: 1.4;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    ::selection { 
+        background: var(--fg); 
+        color: var(--bg); 
+    }
+    
+    .container { 
+        padding: 4rem 3vw; 
+        max-width: 1600px; 
+        margin: 0 auto; 
+    }
+    
+    /* Hero Section */
+    .hero { 
+        min-height: 85vh; 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: flex-end; 
+        padding-bottom: 5rem; 
+    }
+    
+    .hero h1 {
+        font-size: clamp(5rem, 14vw, 18rem);
+        font-weight: 900;
+        line-height: 0.8;
+        letter-spacing: -0.05em;
+        text-transform: uppercase;
+        word-break: break-word;
+        margin-bottom: 2rem;
+    }
+    
+    .hero p {
+        font-size: clamp(1.2rem, 3vw, 2.5rem);
+        max-width: 80%;
+        color: var(--dim);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    } 
+
+    /* Manifesto / Philosophy - Dense Text Block */
+    .dense-text {
+        font-size: clamp(2rem, 6vw, 5.5rem);
+        font-weight: 900;
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+        text-transform: uppercase;
+        text-align: justify;
+        margin: 10rem 0;
+        color: var(--dim);
+        word-break: break-word;
+    }
+    
+    .dense-text span { 
+        color: var(--accent); 
+    }
+
+    /* Grid Layout for Info */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 6rem;
+        margin: 10rem 0;
+    }
+    
+    .section-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3em;
+        border-bottom: 2px solid var(--dim);
+        padding-bottom: 1.5rem;
+        margin-bottom: 3rem;
+        color: var(--dim);
+        font-weight: 700;
+    }
+    
+    /* Lists */
+    ul { list-style: none; }
+    
+    li {
+        font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+        font-weight: 800;
+        padding: 2rem 0;
+        border-bottom: 1px solid #1a1a1a;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+    }
+    
+    li span { 
+        display: block; 
+        font-size: 1.1rem; 
+        font-weight: 500; 
+        color: var(--dim); 
+        margin-top: 1rem;
+        letter-spacing: 0;
+        line-height: 1.5;
+    }
+
+    /* Terminal/Code Block */
+    .terminal-wrapper {
+        margin-top: 2rem;
+    }
+    
+    .reqs {
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+        color: #888;
+        font-weight: 500;
+    }
+
+    .code-block {
+        background: #000;
+        padding: 3rem;
+        border: 1px solid #222;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1.2rem;
+        color: var(--fg);
+        overflow-x: auto;
+        line-height: 1.6;
+    }
+    
+    .code-block .comment { color: #555; }
+
+    .tiny-link {
+        display: inline-block;
+        margin-top: 4rem;
+        color: var(--dim);
+        font-size: 0.7rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        text-decoration: none;
+    }
+
+    .link-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .link-card {
+        display: block;
+        padding: 2rem;
+        border: 1px solid #1c1c1c;
+        background: #080808;
+        color: var(--fg);
+        text-decoration: none;
+        transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .link-card:hover {
+        border-color: #444;
+        transform: translateY(-2px);
+    }
+
+    .link-card small {
+        display: block;
+        margin-bottom: 0.9rem;
+        color: var(--dim);
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .link-card strong {
+        display: block;
+        font-size: clamp(1.4rem, 3vw, 2.2rem);
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+    }
+
+    .checksum {
+        margin-top: 1.2rem;
+        padding-top: 1rem;
+        border-top: 1px solid #1c1c1c;
+    }
+
+    .checksum code {
+        display: block;
+        margin-top: 0.7rem;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.9rem;
+        color: var(--fg);
+        letter-spacing: 0.08em;
+        line-height: 1.5;
+        user-select: all;
+        word-break: break-all;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>Tung<br>sten<br>Score</h1>
+            <p>Windows Security Assessment Tool Built With Rust. Portable & Instant.</p>
+        </div>
+
+        <div class="dense-text">
+            UNLIKE TRADITIONAL SCRIPTS THAT RELY ON EXTERNAL INTERPRETERS, TUNGSTENSCORE IS COMPILED INTO A <span>STANDALONE NATIVE BINARY</span> USING RUST. <span>ZERO DEPENDENCIES.</span> DOWNLOAD AND RUN INSTANTLY WITH <span>NO INSTALLATION REQUIRED.</span> BLAZING FAST SECURITY ASSESSMENT OPTIMIZED FOR POWERSHELL ENVIRONMENTS.
+        </div>
+
+        <div class="grid">
+            <div>
+                <div class="section-title">01 // Features</div>
+                <ul>
+                    <li>Portable & Instant <span>No installation, setup, or administrative overhead required. Simply download the binary and execute immediately.</span></li>
+                    <li>Lightweight & Standalone <span>Built entirely in Rust, requiring no heavy external runtimes or dependencies.</span></li>
+                    <li>Fast Execution <span>Blazing fast security assessment optimized for PowerShell environments.</span></li>
+                </ul>
+            </div>
+            
+            <div>
+                <div class="section-title">02 // Project Plan</div>
+                <ul>
+                    <li>Expand Security <span>Upcoming deep-dive checks into Firewall configurations and Windows Update version verification.</span></li>
+                    <li>Auto-Fix Feature <span>Automatically resolve and patch discovered security vulnerabilities on the fly.</span></li>
+                    <li>Graphical UI <span>Modern desktop UI planned for non-technical users to assess security effortlessly.</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div style="grid-column: 1 / -1;">
+                <div class="section-title">03 // Quick Start</div>
+                <div class="terminal-wrapper">
+                    <div class="reqs">
+                        Prerequisites: Rust / cargo (1.88.0+) | Windows PowerShell<br>
+                        Supported OS: Windows 10 (22H2 or later) | Windows 11
+                    </div>
+                    <div class="code-block">
+<span class="comment"># Download or clone the source code</span>
+git clone https://github.com/your-username/tungstenscore.git
+
+<span class="comment"># Navigate to the directory</span>
+cd tungstenscore
+
+<span class="comment"># Build and run the assessment tool</span>
+cargo run --release
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div style="grid-column: 1 / -1;">
+                <div class="section-title">04 // Links</div>
+                <div class="link-grid">
+                    <a class="link-card" href="./tungsten_score_v0-2-1.zip" target="_blank" rel="noreferrer">
+                        <small>Download</small>
+                        <strong>Get the latest release</strong>
+                    </a>
+                    <a class="link-card" href="https://github.com/dw1210/TungstenScore" target="_blank" rel="noreferrer">
+                        <small>Repository</small>
+                        <strong>View the source code</strong>
+                    </a>
+                </div>
+                <div class="checksum">
+                    <small>SHA-256 / tungsten_score_v0-2-1.zip</small>
+                    <code>7E9C63D2E2F236B1EC6989AD0EDA11F3F4D48535BB0B1EAF7D297E13E67BE763</code>
+                </div>
+            </div>
+        </div>
+
+        <a class="tiny-link" href="https://triplecolons.dev">triple:::colons</a>
+    </div>
+</body>
+</html>
